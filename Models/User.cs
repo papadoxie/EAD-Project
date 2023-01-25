@@ -18,7 +18,7 @@ namespace PUCCI.Models
         public string? Email { get; set; }
 
         // User Cloud Resources
-        public List<Image>? Images { get; set; }
-        public List<Container>? Containers { get; set; }
+        public virtual ICollection<Image>? Images { get; set; }
+        public virtual ICollection<Container>? Containers { get; set; }
     }
 }

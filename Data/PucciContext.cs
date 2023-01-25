@@ -9,13 +9,20 @@ namespace PUCCI.Data
 {
     public class PUCCIContext : DbContext
     {
-        public PUCCIContext (DbContextOptions<PUCCIContext> options)
+        public PUCCIContext(DbContextOptions<PUCCIContext> options)
             : base(options)
         {
         }
 
-        public DbSet<PUCCI.Models.User> User { get; set; } = default!;
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(
+                options => options.EnableRetryOnFailure()
+                );
+        }
 
+        public DbSet<PUCCI.Models.User> User { get; set; } = default!;
         public DbSet<PUCCI.Models.Container> Container { get; set; } = default!;
+        public DbSet<PUCCI.Models.Image> Image { get; set; } = default!;
     }
 }
