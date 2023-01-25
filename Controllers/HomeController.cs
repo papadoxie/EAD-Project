@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using EAD_Project.Models;
+using PUCCI.Models;
 
-namespace EAD_Project.Controllers;
+namespace PUCCI.Controllers;
 
 public class HomeController : Controller
 {

@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using PUCCI.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<PUCCIContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
