@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PUCCI.Models;
 
 namespace PUCCI.Data
 {
-    public class PUCCIContext : DbContext
+    public class PUCCIContext : IdentityDbContext
     {
         public PUCCIContext(DbContextOptions<PUCCIContext> options)
             : base(options)
@@ -18,7 +20,10 @@ namespace PUCCI.Data
         {
             optionsBuilder.UseSqlServer(
                 options => options.EnableRetryOnFailure()
-                );
+        );
+            //optionsBuilder.UseSqlServer(
+            //    options => options.EnableRetryOnFailure()
+            //    );
         }
 
         public DbSet<PUCCI.Models.User> User { get; set; } = default!;
