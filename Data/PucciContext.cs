@@ -1,22 +1,21 @@
-﻿using PUCCI.Models;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using PUCCI.Models;
 
 namespace PUCCI.Data
 {
-    public class PucciContext : DbContext
+    public class PUCCIContext : DbContext
     {
-        public PucciContext() : base ("PucciContext") 
-        { 
-        }
-
-        public DbSet<Container> Containers { get; set; }
-        public DbSet<Image> Images { get; set; }
-        public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public PUCCIContext (DbContextOptions<PUCCIContext> options)
+            : base(options)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>(); 
         }
+
+        public DbSet<PUCCI.Models.User> User { get; set; } = default!;
+
+        public DbSet<PUCCI.Models.Container> Container { get; set; } = default!;
     }
 }
