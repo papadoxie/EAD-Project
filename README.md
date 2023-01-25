@@ -7,6 +7,5 @@
 ```bash
 git clone https://github.com/papadoxie/EAD-Project.git
 cd EAD-Project
-git submodule init
-git submodule update
+git submodule update --init --recursive
 ```
