@@ -1,8 +1,8 @@
-﻿using EAD_Project.Models;
+﻿using PUCCI.Models;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace EAD_Project.Data
+namespace PUCCI.Data
 {
     public class PucciContext : DbContext
     {

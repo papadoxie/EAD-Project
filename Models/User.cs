@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace EAD_Project.Models
+namespace PUCCI.Models
 {
     public class User
     {
