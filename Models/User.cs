@@ -8,6 +8,7 @@
         public string? Email { get; set; }
 
         // User resources on PUCCI
+        public List<Image>? Images { get; set; }
         public List<Container>? Containers { get; set; }
     }
 }
