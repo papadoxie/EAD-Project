@@ -20,10 +20,7 @@ namespace PUCCI.Data
         {
             optionsBuilder.UseSqlServer(
                 options => options.EnableRetryOnFailure()
-        );
-            //optionsBuilder.UseSqlServer(
-            //    options => options.EnableRetryOnFailure()
-            //    );
+            );
         }
 
         public DbSet<PUCCI.Models.User> User { get; set; } = default!;
