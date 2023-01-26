@@ -17,8 +17,8 @@
 
                             <div class="form-outline form-white mb-4">
                                 <input type="email" id="typeEmailX" class="form-control form-control-lg" />
-                                <label class="form-label" for="typeEmailX">Email</label>
-                                @Html.EditorFor(model => model.Password)
+                                <label class="form-label" for="typeEmailX">Email</label>    
+                                Email  @Html.EditorFor(model => model.Email,new {@type="email" ,@id="typeEmailX" ,@class="form-control form-control-lg"})
                             </div>
 
                             <div class="form-outline form-white mb-4">
