@@ -51,14 +51,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-        );
-    endpoints.MapRazorPages();
-});
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
+app.MapRazorPages();
 
 app.Run();
 
@@ -117,5 +116,6 @@ void AddorUpdateDb(WebApplication app)
         app.Configuration.GetConnectionString("PUCCIContext")
     );
     var context = new PUCCIIdentityContext(optionsBuilder.Options);
+    context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
 }
