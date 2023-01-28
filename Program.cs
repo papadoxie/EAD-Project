@@ -5,52 +5,25 @@ using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PUCCI.Data;
+using PUCCI.Areas.Identity.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PUCCIContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContext' not found.")));
+AddDbContext(builder);
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+ConfigureIdentity(builder);
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<PUCCIContext>();
+ConfigureCookies(builder);
+
 builder.Services.AddRazorPages();
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Password settings.
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 2;
-    options.Password.RequiredUniqueChars = 1;
-
-    // Lockout settings.
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    // User settings.
-    options.User.AllowedUserNameCharacters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-    options.User.RequireUniqueEmail = true;
-});
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    // Cookie settings
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.SlidingExpiration = true;
-});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+AddorUpdateDb(app);
 
 if (app.Environment.IsDevelopment())
 {
@@ -61,14 +34,6 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-
-// Update DB with model changes
-var optionsBuilder = new DbContextOptionsBuilder<PUCCIContext>();
-optionsBuilder.UseSqlServer(
-    app.Configuration.GetConnectionString("PUCCIContext")
-);
-var context = new PUCCIContext(optionsBuilder.Options);
-context.Database.EnsureCreated();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -89,14 +54,68 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
-        name: "defualt",
+        name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}"
         );
     endpoints.MapRazorPages();
 });
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.Run();
+
+void AddDbContext(WebApplicationBuilder builder)
+{
+    var connectionString = builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContextConnection' not found.");
+    builder.Services.AddDbContext<PUCCIIdentityContext>(options => options.UseSqlServer(connectionString));
+}
+
+void ConfigureIdentity(WebApplicationBuilder builder)
+{
+    builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PUCCIIdentityContext>();
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+    builder.Services.Configure<IdentityOptions>(options =>
+    {
+        // Password settings.
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 2;
+        options.Password.RequiredUniqueChars = 1;
+
+        // Lockout settings.
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings.
+        options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = true;
+    });
+}
+
+void ConfigureCookies(WebApplicationBuilder builder)
+{
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        // Cookie settings
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+        options.LoginPath = "/Identity/Account/Login";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        options.SlidingExpiration = true;
+    });
+}
+
+void AddorUpdateDb(WebApplication app)
+{
+    // Update DB with model changes
+    var optionsBuilder = new DbContextOptionsBuilder<PUCCIIdentityContext>();
+    optionsBuilder.UseSqlServer(
+        app.Configuration.GetConnectionString("PUCCIContext")
+    );
+    var context = new PUCCIIdentityContext(optionsBuilder.Options);
+    context.Database.EnsureCreated();
+}

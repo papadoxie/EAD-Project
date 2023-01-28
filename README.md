@@ -1,5 +1,5 @@
 # EAD Semester Project
-## PUCCI (PU Cloud Computing Inc.)
+## PUCCI (PU Cloud Computing Interface)
 
 ## Building 
 ### Clone the repository and initialize the submodules
