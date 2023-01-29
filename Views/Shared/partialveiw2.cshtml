@@ -1,7 +1,9 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "partialveiw2";
 }
+<script src="https://kit.fontawesome.com/b9eb2d0220.js" crossorigin="anonymous"></script>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PUCCI</a>
@@ -11,13 +13,20 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
+                @if (HttpContextAccessor.HttpContext.Session.GetString("Email")==null)
+                {
                     <li class="nav-item">
-                    <a class="nav-link text-dark" href="~/Identity/Account/Login">Login</a>
+                        <a class="nav-link text-dark" href="~/Identity/Account/Login">Login</a>
                     </li>  
                     <li class="nav-item">
-                    <a class="nav-link text-dark" href="~/Identity/Account/Register">Register</a>
+                        <a class="nav-link text-dark" href="~/Identity/Account/Register">Sign Up</a>
                     </li>
-                </ul>
+                }
+                else
+                {
+                    <a href="#"><i class="fa-solid fa-file-code text-black fa-2xl" style="position: absolute; right:50px;top: 25px;"></i></a>
+                }
+            </ul>
             </div>
         </div>
     </nav>

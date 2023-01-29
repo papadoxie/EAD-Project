@@ -28,6 +28,7 @@ namespace PUCCI.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            HttpContext.Session.Clear();
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
@@ -36,6 +37,7 @@ namespace PUCCI.Areas.Identity.Pages.Account
             {
                 // This needs to be a redirect so that the browser performs a new
                 // request and the identity for the user gets updated.
+                
                 return RedirectToPage();
             }
         }

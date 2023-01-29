@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
+using System.Web;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using PUCCI.Areas.Identity.Data;
+using Microsoft.Extensions.Options;
 
 namespace PUCCI.Areas.Identity.Pages.Account
 {
@@ -116,6 +117,8 @@ namespace PUCCI.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    HttpContext.Session.SetString("Email",Input.Email);
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
