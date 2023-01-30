@@ -1,31 +1,61 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-//using Microsoft.EntityFrameworkCore;
-//using PUCCI.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data.Entity;
 
-//namespace PUCCI.Data
-//{
-//    public class PUCCIContext : IdentityDbContext
-//    {
-//        public PUCCIContext(DbContextOptions<PUCCIContext> options)
-//            : base(options)
-//        {
-//        }
+using PUCCI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using PUCCI.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Build.Framework;
+using Microsoft.AspNetCore.Identity;
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            optionsBuilder.UseSqlServer(
-//                options => options.EnableRetryOnFailure()
-//            );
-//        }
+namespace PUCCI.Data;
 
-//        public DbSet<PUCCI.Models.User> User { get; set; } = default!;
-//        public DbSet<PUCCI.Models.Container> Container { get; set; } = default!;
-//        public DbSet<PUCCI.Models.Image> Image { get; set; } = default!;
+public class DbInitializer
+{
+    public static void Seed(ModelBuilder builder)
+    {
+        SetPasswords();
+        builder.Entity<User>().HasData(
+            _seedUsers
+        );
+    }
 
-//    }
-//}
+    private static void SetPasswords()
+    {
+        var hasher = new PasswordHasher<User>();
+
+        for (int i = 0; i < _seedUsers.Count; i++)
+        {
+            _seedUsers[i].PasswordHash = hasher.HashPassword(_seedUsers[i], _passwords[i]);
+            _seedUsers[i].EmailConfirmed = true;
+            _seedUsers[i].LockoutEnabled = true;
+        }
+    }
+
+    private static List<User> _seedUsers = new List<User>()
+    {
+        new User
+        {
+            UserName = "123",
+            NormalizedUserName = "123",
+            Email = "123123@123",
+            NormalizedEmail = "123@123.123"
+        },
+        new User
+        {
+            UserName = "asd",
+            NormalizedUserName = "ASD",
+            Email = "asd@asd.com",
+            NormalizedEmail = "ASD@ASD.COM"
+        }
+    };
+
+    private static List<string> _passwords = new List<string>()
+    {
+        "123123",
+        "asd"
+    };
+}
