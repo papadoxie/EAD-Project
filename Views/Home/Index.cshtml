@@ -1,10 +1,7 @@
-﻿@page
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor HttpContextAccessor
-@{
+﻿@{
+    ViewData["Title"] = "Home Page";
     Layout = "";      
 }
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,7 +27,7 @@
 
 <!-- Background image -->
 <body>
-            <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
         <a class="text-dark" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><h5 class="my-0 mr-md-auto text-dark font-weight-normal">PUCCI</h5></a>
                 <nav class="my-2 my-md-0 mr-md-1">
                     <a class="p-3 text-dark" href="#">Features</a>
@@ -38,7 +35,7 @@
                     <a class="p-3 text-dark" href="#">Support</a>
                     <a class="p-0 text-dark" href="#">Pricing</a>
                 </nav>
-        @if(HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
+        @if (!User.Identity.IsAuthenticated)
             {
             <a class="btn btn-outline-primary align-items-center" style="position: absolute; right: 10px;top: 8px;" href="~/Identity/Account/Login">Sign in</a>
         }
@@ -70,7 +67,7 @@
                                         <li>Email support</li>
                                         <li>Help center access</li>
                                     </ul>
-                                @if (HttpContextAccessor.HttpContext.Session.GetString("Email") == null)
+                                @if (!User.Identity.IsAuthenticated)
                                 {
                                     <a href="~/Identity/Account/Register"><button type="button" class="btn btn-lg btn-block btn-primary">Sign up for free</button></a>
                                 }
@@ -119,6 +116,7 @@
         </div>
     </div>
     </div>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
