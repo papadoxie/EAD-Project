@@ -1,4 +1,6 @@
-﻿namespace PUCCI.Models
+﻿using Microsoft.Extensions.FileProviders;
+
+namespace PUCCI.Models
 {
     public class Image
     {
@@ -6,6 +8,6 @@
         public string? Name { get; set; }
         public string? Tag { get; set; }
         public string? Created { get; set; }
-        
+        public IFormFile? Dockerfile { get; set; }
     }
 }
