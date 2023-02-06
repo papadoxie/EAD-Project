@@ -28,7 +28,7 @@ namespace PUCCI.Controllers
         }
 
         // GET: Image/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Images == null)
             {
@@ -56,7 +56,7 @@ namespace PUCCI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Tag,Created")] Image image)
+        public async Task<IActionResult> Create([Bind("ID,ImageID,Name,Tag,Created,DockerfilePath")] Image image)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace PUCCI.Controllers
         }
 
         // GET: Image/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Images == null)
             {
@@ -88,7 +88,7 @@ namespace PUCCI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ID,Name,Tag,Created")] Image image)
+        public async Task<IActionResult> Edit(int? id, [Bind("ID,ImageID,Name,Tag,Created,DockerfilePath")] Image image)
         {
             if (id != image.ID)
             {
@@ -119,7 +119,7 @@ namespace PUCCI.Controllers
         }
 
         // GET: Image/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Images == null)
             {
@@ -139,7 +139,7 @@ namespace PUCCI.Controllers
         // POST: Image/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             if (_context.Images == null)
             {
@@ -155,7 +155,7 @@ namespace PUCCI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ImageExists(string id)
+        private bool ImageExists(int? id)
         {
           return (_context.Images?.Any(e => e.ID == id)).GetValueOrDefault();
         }
