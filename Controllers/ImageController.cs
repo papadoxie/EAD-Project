@@ -75,7 +75,8 @@ namespace PUCCI.Controllers
         {
             if (!ModelState.IsValid || Dockerfile is null)
             {
-				// Replace this with a reasonable error
+                // Replace this with a reasonable error
+                ViewBag.Message = "Error";
 				return View();
             }
            
