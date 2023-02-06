@@ -115,6 +115,6 @@ void AddorUpdateDb(WebApplication app)
         app.Configuration.GetConnectionString("PUCCIContext")
     );
     var context = new PUCCIIdentityContext(optionsBuilder.Options);
-    // context.Database.EnsureDeleted();
+     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
 }
