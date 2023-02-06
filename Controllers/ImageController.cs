@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PUCCI.Areas.Identity.Data;
 using PUCCI.Data;
 using PUCCI.Models;
 
@@ -13,11 +16,20 @@ namespace PUCCI.Controllers
     public class ImageController : Controller
     {
         private readonly PUCCIIdentityContext _context;
-        private readonly IWebHostEnvironment Environment;
-        public ImageController(PUCCIIdentityContext context, IWebHostEnvironment environment)
+        
+        // Used to get filepath for saving Dockerfiles
+        private readonly IWebHostEnvironment _environment;
+
+        // Used to get instance of User accessing the page
+        private readonly UserManager<User> _userManager;
+
+        public ImageController( PUCCIIdentityContext context, 
+                                IWebHostEnvironment environment,
+                                UserManager<User> userManager)
         {
-            Environment = environment;
+            _environment = environment;
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Image
@@ -47,6 +59,7 @@ namespace PUCCI.Controllers
         }
 
         // GET: Image/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -57,34 +70,55 @@ namespace PUCCI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Image image,IFormFile Dockerfile)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("Name")] Image image, IFormFile Dockerfile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid || Dockerfile is null)
             {
-                _context.Add(image);
-                await _context.SaveChangesAsync();
-                if (Dockerfile == null)
-                {
-                    ModelState.AddModelError("FileURL", "Please upload file");
-                }
-                string wwwPath = this.Environment.WebRootPath;
-                string path = Path.Combine(wwwPath, "DockerFiles");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                var fileName = Path.GetFileName(Dockerfile.FileName);
-                var pathWithFileName = Path.Combine(path, fileName);
-                using (FileStream stream = new
-                    FileStream(pathWithFileName,
-                    FileMode.Create))
-                {
-                    Dockerfile.CopyTo(stream);
-                    ViewBag.Message = "file uploaded successfully";
-                }
-                return RedirectToAction(nameof(Index));
+				// Replace this with a reasonable error
+				return View();
             }
-            return View(image);
+           
+            // Save Dockerfile to webroot
+            string wwwPath = _environment.WebRootPath;
+            string path = Path.Combine(wwwPath, "Dockerfiles");
+                
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var fileName = Path.GetFileName(Dockerfile.FileName);
+            // Keep Dockerfile name unique
+			fileName += Guid.NewGuid();
+            var filePath = Path.Combine(path, fileName);
+                
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                Dockerfile.CopyTo(stream);
+            }
+
+            image.DockerfilePath = filePath;
+
+            // Get User to save image in
+            var user = await _userManager.GetUserAsync(User);
+
+            if(user is null)
+            {
+                // Replace this with a reasonable error
+                return View();
+            }
+
+            // Will only run if user is creating images the first time
+            if(user.Images == null)
+            {
+                user.Images = new List<Image>();
+            }            
+            user.Images.Add(image);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Image/Edit/5
