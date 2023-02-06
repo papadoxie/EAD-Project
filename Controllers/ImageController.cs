@@ -13,9 +13,10 @@ namespace PUCCI.Controllers
     public class ImageController : Controller
     {
         private readonly PUCCIIdentityContext _context;
-
-        public ImageController(PUCCIIdentityContext context)
+        private readonly IWebHostEnvironment Environment;
+        public ImageController(PUCCIIdentityContext context, IWebHostEnvironment environment)
         {
+            Environment = environment;
             _context = context;
         }
 
@@ -56,12 +57,31 @@ namespace PUCCI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ImageID,Name,Tag,Created,DockerfilePath")] Image image)
+        public async Task<IActionResult> Create([Bind("Name")] Image image,IFormFile Dockerfile)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(image);
                 await _context.SaveChangesAsync();
+                if (Dockerfile == null)
+                {
+                    ModelState.AddModelError("FileURL", "Please upload file");
+                }
+                string wwwPath = this.Environment.WebRootPath;
+                string path = Path.Combine(wwwPath, "DockerFiles");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                var fileName = Path.GetFileName(Dockerfile.FileName);
+                var pathWithFileName = Path.Combine(path, fileName);
+                using (FileStream stream = new
+                    FileStream(pathWithFileName,
+                    FileMode.Create))
+                {
+                    Dockerfile.CopyTo(stream);
+                    ViewBag.Message = "file uploaded successfully";
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(image);
