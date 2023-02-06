@@ -1,0 +1,24 @@
+﻿@{
+    
+}
+    <div>
+        <div class="dropdown" style="position: absolute; right: 10px;top: 6px;">
+            <button class="dropdown-toggle" id="dropdownMenuButton1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="~/img/death.gif" class="rounded-circle" width="35" height="35">
+            </button>
+            <ul class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li><a class="dropdown-item " href="~/Identity/Account/Login">Login</a></li>
+                    <li><a class="dropdown-item disabled" href="~/Identity/Account/Logout">Sign Out</a></li>
+                    <li> <a class="dropdown-item" href="~/Identity/Account/Register">Sign Up</a></li>
+                }
+                else
+                {
+                    <li><a class="dropdown-item disabled" href="~/Identity/Account/Login">Login</a></li>
+                    <li><a class="dropdown-item" href="~/Identity/Account/Logout">Sign Out</a></li>
+                    <li> <a class="dropdown-item disabled" href="~/Identity/Account/Register">Sign Up</a></li>
+                }
+            </ul>
+        </div>
+    </div>
