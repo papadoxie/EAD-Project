@@ -99,6 +99,8 @@ namespace PUCCI.Controllers
             }
 
             image.DockerfilePath = filePath;
+            image.Create();
+
 
             // Get User to save image in
             var user = await _userManager.GetUserAsync(User);
