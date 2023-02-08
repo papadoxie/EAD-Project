@@ -9,15 +9,15 @@
             <ul class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
                 @if (!User.Identity.IsAuthenticated)
                 {
-                    <li><a class="dropdown-item " href="~/Identity/Account/Login">Login</a></li>
+                <li><a class="dropdown-item disabled" href="~/Image/Index">Images</a></li>
                     <li><a class="dropdown-item disabled" href="~/Identity/Account/Logout">Sign Out</a></li>
-                    <li> <a class="dropdown-item" href="~/Identity/Account/Register">Sign Up</a></li>
+                <li> <a class="dropdown-item" href="~/Identity/Account/Login">Login</a></li>
                 }
                 else
                 {
-                    <li><a class="dropdown-item disabled" href="~/Identity/Account/Login">Login</a></li>
+                <li><a class="dropdown-item" href="~/Image/Index">Images</a></li>
                     <li><a class="dropdown-item" href="~/Identity/Account/Logout">Sign Out</a></li>
-                    <li> <a class="dropdown-item disabled" href="~/Identity/Account/Register">Sign Up</a></li>
+                <li> <a class="dropdown-item disabled" href="~/Identity/Account/Login">Login</a></li>
                 }
             </ul>
         </div>
