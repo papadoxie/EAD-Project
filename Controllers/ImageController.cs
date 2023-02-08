@@ -75,9 +75,8 @@ namespace PUCCI.Controllers
         {
             if (!ModelState.IsValid || Dockerfile is null)
             {
-                // Replace this with a reasonable error
                 ViewBag.Message = "Error";
-				return View();
+		return View();
             }
            
             // Save Dockerfile to webroot
@@ -91,7 +90,7 @@ namespace PUCCI.Controllers
 
             var fileName = Path.GetFileName(Dockerfile.FileName);
             // Keep Dockerfile name unique
-			fileName += Guid.NewGuid();
+	    fileName += Guid.NewGuid();
             var filePath = Path.Combine(path, fileName);
                 
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
