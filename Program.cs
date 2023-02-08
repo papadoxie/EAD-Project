@@ -6,11 +6,11 @@ using NuGet.Protocol.Plugins;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PUCCI.Data;
 using PUCCI.Areas.Identity.Data;
-
+using PUCCI.Models.Audit;
 
 var builder = WebApplication.CreateBuilder(args);
 
-AddDbContext(builder);
+ConfigureModel(builder);
 
 ConfigureIdentity(builder);
 
@@ -22,8 +22,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
-AddorUpdateDb(app);
 
 if (app.Environment.IsDevelopment())
 {
@@ -60,10 +58,11 @@ app.MapRazorPages();
 
 app.Run();
 
-void AddDbContext(WebApplicationBuilder builder)
+void ConfigureModel(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContextConnection' not found.");
     builder.Services.AddDbContext<PUCCIIdentityContext>(options => options.UseSqlServer(connectionString));
+    builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 }
 
 void ConfigureIdentity(WebApplicationBuilder builder)
@@ -105,16 +104,4 @@ void ConfigureCookies(WebApplicationBuilder builder)
         options.AccessDeniedPath = "/Identity/Account/AccessDenied";
         options.SlidingExpiration = true;
     });
-}
-
-void AddorUpdateDb(WebApplication app)
-{
-    // Update DB with model changes
-    var optionsBuilder = new DbContextOptionsBuilder<PUCCIIdentityContext>();
-    optionsBuilder.UseSqlServer(
-        app.Configuration.GetConnectionString("PUCCIContext")
-    );
-    var context = new PUCCIIdentityContext(optionsBuilder.Options);
-     context.Database.EnsureDeleted();
-    context.Database.EnsureCreated();
 }

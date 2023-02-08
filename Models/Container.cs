@@ -1,6 +1,8 @@
-﻿namespace PUCCI.Models
+﻿using PUCCI.Models.Audit;
+
+namespace PUCCI.Models
 {
-    public class Container
+    public class Container : AuditModel
     {
         public string? ID { get; set; }
         public string? Name { get; set; }

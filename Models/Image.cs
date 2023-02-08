@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using PUCCI.Models.Audit;
 
 namespace PUCCI.Models
 {
-    public class Image
+    public class Image : AuditModel
     {
         public void Create()
         {
@@ -30,10 +31,9 @@ namespace PUCCI.Models
 				{
 					process.StartInfo = new ProcessStartInfo
 					{
-						WindowStyle = ProcessWindowStyle.Maximized,
+						WindowStyle = ProcessWindowStyle.Hidden,
 						FileName = shell,
-						Arguments = command,
-						UseShellExecute = true
+						Arguments = command
 					};
 					process.Start();
 				}
