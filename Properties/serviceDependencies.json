@@ -3,6 +3,15 @@
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:PUCCIContext"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:PUCCIIdentityContextConnection",
+      "dynamicId": null
+    },
+    "mssql3": {
+      "type": "mssql",
+      "connectionId": "Buttsahab"
     }
   }
 }

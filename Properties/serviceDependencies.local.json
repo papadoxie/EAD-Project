@@ -5,8 +5,16 @@
       "connectionId": "ConnectionStrings:PUCCIContext"
     },
     "mssql2": {
+      "secretStore": "LocalSecretsFile",
       "type": "mssql.local",
-      "connectionId": "ConnectionStrings:PUCCIIdentityContextConnection"
+      "connectionId": "ConnectionStrings:PUCCIIdentityContextConnection",
+      "dynamicId": null
+    },
+    "mssql3": {
+      "secretStore": "LocalSecretsFile",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/buttsserver/databases/PUCCIContext",
+      "type": "mssql.azure",
+      "connectionId": "Buttsahab"
     }
   }
 }
