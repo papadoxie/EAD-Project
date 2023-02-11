@@ -9,7 +9,7 @@ using PUCCI.Areas.Identity.Data;
 using PUCCI.Models.Audit;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var config = builder.Configuration;
 ConfigureModel(builder);
 
 ConfigureIdentity(builder);
@@ -17,6 +17,15 @@ ConfigureIdentity(builder);
 ConfigureCookies(builder);
 
 builder.Services.AddRazorPages();
+
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+services.AddAuthentication().AddGoogle(googleOptions =>
+{
+   googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+   googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
