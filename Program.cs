@@ -7,9 +7,27 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PUCCI.Data;
 using PUCCI.Areas.Identity.Data;
 using PUCCI.Models.Audit;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var config = builder.Configuration;
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    var builtConfig = config.Build();
+
+    string ClientId = builtConfig["KeyVaultConfig:ClientId"];
+    string ClientSecret = builtConfig["KeyVaultConfig:ClientSecret"];
+    string KvURL = builtConfig["KeyVaultConfig:KvURL"];
+    string TenantId = builtConfig["KeyVaultConfig:TenantId"];
+    var credential =  new ClientSecretCredential(TenantId,ClientId, ClientSecret);
+    
+    var client = new SecretClient(new Uri(KvURL), credential);
+    config.AddAzureKeyVault(client, new AzureKeyVaultConfigurationOptions());
+});
+
 ConfigureModel(builder);
 
 ConfigureIdentity(builder);
