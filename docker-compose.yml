@@ -3,7 +3,7 @@ version: '3.4'
 services:
   pucci:
     image: ${DOCKER_REGISTRY-}pucci
-    container_name: "pucci_app"
+    container_name: pucci_app
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,22 +12,23 @@ services:
       - ASPNETCORE_URLS=https://localhost;http://localhost
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-     # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https/
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     ports:
       - 8000:80
       - 8443:443
     expose:
-      - "8000"
+      - 8000
+      - 8443
     depends_on:
       - pucci_db
 
   pucci_db:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: "pucci_db"
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: pucci_db
     environment:
-      MSSQL_SA_PASSWORD: "D0ck3r148!"
-      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: D0ck3r148!
+      ACCEPT_EULA: 1
     ports:
       - 8433:1433
     expose:
-      - "8433"
+      - 8433
