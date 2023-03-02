@@ -22,12 +22,11 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     string ClientSecret = builtConfig["KeyVaultConfig:ClientSecret"];
     string KvURL = builtConfig["KeyVaultConfig:KvURL"];
     string TenantId = builtConfig["KeyVaultConfig:TenantId"];
-    var credential =  new ClientSecretCredential(TenantId,ClientId, ClientSecret);
-    
+    var credential = new ClientSecretCredential(TenantId, ClientId, ClientSecret);
+
     var client = new SecretClient(new Uri(KvURL), credential);
     config.AddAzureKeyVault(client, new AzureKeyVaultConfigurationOptions());
 });
-
 ConfigureModel(builder);
 
 ConfigureIdentity(builder);
@@ -39,11 +38,11 @@ builder.Services.AddRazorPages();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddAuthentication().AddGoogle(googleOptions =>
-{
-   googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-   googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-});
+//services.AddAuthentication().AddGoogle(googleOptions =>
+//{
+//   googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+//   googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+//});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
