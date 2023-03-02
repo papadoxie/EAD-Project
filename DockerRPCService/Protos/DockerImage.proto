@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "DockerRPCService";
+
+package greet;
+
+service DockerImage {
+  rpc CreateImage (DockerFile) returns (Image);
+}
+
+// The request message containing the user's name.
+message Dockerfile {
+    bytes DockerFile = 1;
+}
+
+// The response message containing the greetings.
+message Image {
+    optional int32 ID = 1;
+    string ImageID = 2;
+    string Name = 3;
+    string Tag = 4;
+    string Created = 5;
+    optional string DockerfilePath = 6;
+}
