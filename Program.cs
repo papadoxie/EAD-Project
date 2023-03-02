@@ -1,21 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using PUCCI.Data;
 using PUCCI.Areas.Identity.Data;
 using PUCCI.Models.Audit;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
-//if (config.GetConnectionString("PUCCIContext")!=null){
-//}
+
+ConfigureDataProtection(builder);
+
 ConfigureModel(builder);
 
 ConfigureIdentity(builder);
@@ -26,12 +26,6 @@ builder.Services.AddRazorPages();
 
 var services = builder.Services;
 var configuration = builder.Configuration;
-
-//services.AddAuthentication().AddGoogle(googleOptions =>
-//{
-//   googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-//   googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-//});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -73,6 +67,16 @@ app.MapRazorPages();
 
 app.Run();
 
+void ConfigureDataProtection(WebApplicationBuilder builder)
+{
+    builder.Services.AddDataProtection().UseCryptographicAlgorithms(
+        new AuthenticatedEncryptorConfiguration
+        {
+            EncryptionAlgorithm = EncryptionAlgorithm.AES_128_CBC,
+            ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+        });
+}
+
 void ConfigureModel(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("PUCCIContext");
@@ -86,7 +90,6 @@ void ConfigureModel(WebApplicationBuilder builder)
                 builder.Configuration["KeyVaultConfig:ClientSecret"]
             )
         );
-        connectionString = builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContextConnection' not found.");
     }
     builder.Services.AddDbContext<PUCCIIdentityContext>(options => options.UseSqlServer(connectionString));
     builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
