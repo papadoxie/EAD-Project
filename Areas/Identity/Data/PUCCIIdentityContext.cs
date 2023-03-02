@@ -12,12 +12,13 @@ public partial class PUCCIIdentityContext : IdentityDbContext<User>
         : base(options)
     {
         _currentUserService = currentUserService;
+        Database.Migrate();
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-		Database.Migrate();
+		//Database.Migrate();
 
 		// Seed the DB with initial Entities
 		// DbInitializer.Seed(builder);
