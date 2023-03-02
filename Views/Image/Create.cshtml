@@ -8,10 +8,31 @@
 
 <h4>Image</h4>
 <hr />
+<script>
+    function uploadFiles() {
+            var input = document.getElementById('postedFiles');
+            var Files = input.files;
+            var Form =  new FormData();
+            for(var i=0;i<Files.length;i++){
+                Form.append("files",Files[i]);
+            }
+            Form.append("Name",document.getElementsByName("Name"));
+            $.ajax({
+                url :"Image/Create",
+                type: "POST",
+                data : Form,
+                contentType : false,
+                processData : false,
+                success : function(data){
+                    alert("Uploaded"+ data);
+                }
+            });
+    }
+ </script>
 <div class="row">
     <div class="col-md-4">
         <h3>@ViewBag.Message </h3>
-        <form method="post" enctype="multipart/form-data" asp-action="Create" asp-controller="Image">
+        <form method="post" id="postedFiles" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -20,7 +41,7 @@
             </div>
             <input type="file" name="Dockerfile" />
             <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="uploadFiles()"/>
             </div>
         </form>
     </div>

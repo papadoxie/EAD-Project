@@ -7,9 +7,15 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PUCCI.Data;
 using PUCCI.Areas.Identity.Data;
 using PUCCI.Models.Audit;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var config = builder.Configuration;
+//if (config.GetConnectionString("PUCCIContext")!=null){
+//}
 ConfigureModel(builder);
 
 ConfigureIdentity(builder);
@@ -17,6 +23,15 @@ ConfigureIdentity(builder);
 ConfigureCookies(builder);
 
 builder.Services.AddRazorPages();
+
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+//services.AddAuthentication().AddGoogle(googleOptions =>
+//{
+//   googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+//   googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+//});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -60,7 +75,19 @@ app.Run();
 
 void ConfigureModel(WebApplicationBuilder builder)
 {
-    var connectionString = builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContextConnection' not found.");
+    var connectionString = builder.Configuration.GetConnectionString("PUCCIContext");
+    if (connectionString == null)
+    {
+        builder.Configuration.AddAzureKeyVault(
+            new Uri(builder.Configuration["KeyVaultConfig:KvURL"]!),
+            new ClientSecretCredential(
+                builder.Configuration["KeyVaultConfig:TenantId"],
+                builder.Configuration["KeyVaultConfig:ClientId"],
+                builder.Configuration["KeyVaultConfig:ClientSecret"]
+            )
+        );
+        connectionString = builder.Configuration.GetConnectionString("PUCCIContext") ?? throw new InvalidOperationException("Connection string 'PUCCIContextConnection' not found.");
+    }
     builder.Services.AddDbContext<PUCCIIdentityContext>(options => options.UseSqlServer(connectionString));
     builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 }
