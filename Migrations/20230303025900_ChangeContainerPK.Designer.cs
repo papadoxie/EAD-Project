@@ -12,8 +12,8 @@ using PUCCI.Data;
 namespace PUCCI.Migrations
 {
     [DbContext(typeof(PUCCIIdentityContext))]
-    [Migration("20230302235852_AddUserId")]
-    partial class AddUserId
+    [Migration("20230303025900_ChangeContainerPK")]
+    partial class ChangeContainerPK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,8 +229,14 @@ namespace PUCCI.Migrations
 
             modelBuilder.Entity("PUCCI.Models.Container", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ID"));
+
+                    b.Property<string>("ContainerID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
