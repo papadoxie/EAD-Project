@@ -18,10 +18,6 @@ public partial class PUCCIIdentityContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-		//Database.Migrate();
-
-		// Seed the DB with initial Entities
-		// DbInitializer.Seed(builder);
 	}
 
 	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
