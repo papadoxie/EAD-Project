@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PUCCI", "PUCCI.csproj", "{0
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AE9E7BAE-A74F-4728-B5E1-8547CCACE474}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DockerRPCService", "DockerRPCService\DockerRPCService.csproj", "{B48C1583-2A20-4291-9541-65150D569E95}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{AE9E7BAE-A74F-4728-B5E1-8547CCACE474}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE9E7BAE-A74F-4728-B5E1-8547CCACE474}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE9E7BAE-A74F-4728-B5E1-8547CCACE474}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B48C1583-2A20-4291-9541-65150D569E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B48C1583-2A20-4291-9541-65150D569E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B48C1583-2A20-4291-9541-65150D569E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B48C1583-2A20-4291-9541-65150D569E95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

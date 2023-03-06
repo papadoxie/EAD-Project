@@ -83,29 +83,14 @@ namespace PUCCI.Controllers
 			if (!ModelState.IsValid || Dockerfile is null)
 			{
 				ViewBag.Message = "Error";
-				return View();
+				return Problem("Dockerfile or Image is invalid");
 			}
 
 			// Save Dockerfile to webroot
 			string wwwPath = _environment.WebRootPath;
 			string path = Path.Combine(wwwPath, "Dockerfiles");
 
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-
-			var fileName = Path.GetFileName(Dockerfile.FileName);
-			// Keep Dockerfile name unique
-			fileName += Guid.NewGuid();
-			var filePath = Path.Combine(path, fileName);
-
-			using (FileStream stream = new FileStream(filePath, FileMode.Create))
-			{
-				Dockerfile.CopyTo(stream);
-			}
-
-			image.DockerfilePath = filePath;
+			image.Create(Dockerfile, path);
 
 			// Get User to save image in
 			var user = await _userManager.GetUserAsync(User);
@@ -113,16 +98,15 @@ namespace PUCCI.Controllers
 			if (user is null)
 			{
 				// Replace this with a reasonable error
-				return View();
+				return Problem("User not found");
 			}
 
 			// Will only run if user is creating images the first time
-			if (user.Images == null)
-			{
-				user.Images = new List<Image>();
-			}
+			
+			
+			user.Images ??= new List<Image>();
+			
 			user.Images.Add(image);
-			image.Create();
 
 			await _context.SaveChangesAsync();
 

@@ -18,10 +18,14 @@ namespace PUCCI.Controllers
 	public class ContainerController : Controller
 	{
 		private readonly PUCCIIdentityContext _context;
+		
+		// Used to get instance of User accessing the page
+        private readonly UserManager<User> _userManager;
 
-		public ContainerController(PUCCIIdentityContext context)
+        public ContainerController(PUCCIIdentityContext context, UserManager<User> userManager)
 		{
 			_context = context;
+			_userManager = userManager;
 		}
 
 		// GET: Container
@@ -40,9 +44,9 @@ namespace PUCCI.Controllers
 
 		// GET: Container/Details/5
 		[Authorize]
-		public async Task<IActionResult> Details(string id)
+		public async Task<IActionResult> Details(int id)
 		{
-			if (id == null || _context.Containers == null)
+			if (_context.Containers == null)
 			{
 				return NotFound();
 			}
@@ -57,35 +61,53 @@ namespace PUCCI.Controllers
 			return View(container);
 		}
 
-		// GET: Container/Create
 		[Authorize]
-		public IActionResult Create()
+		public IActionResult Run (int id)
 		{
+			if (_context.Containers == null)
+			{
+				return NotFound();
+			}
+
+			//var container = (from ctrs in _context.Containers
+			//				where ctrs.ID == id
+			//				select ctrs).First();
+
+			//container.Run();
+
 			return View();
 		}
 
-		// POST: Container/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
+		// GET: Container/Create
 		[Authorize]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,Image,Status")] Container container)
+		public async Task<IActionResult> Create(string ImageID)
 		{
-			if (ModelState.IsValid)
-			{
-				_context.Add(container);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			return View(container);
-		}
+			var container = new Container();
+			container.Create(ImageID);
+
+            // Get User to save image in
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user is null)
+            {
+                // Replace this with a reasonable error
+                return Problem("User not found");
+            }
+
+            // Will only run if user is creating images the first time
+            user.Containers ??= new List<Container>();
+            user.Containers.Add(container);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
 
 		// GET: Container/Edit/5
 		[Authorize]
-		public async Task<IActionResult> Edit(string id)
+		public async Task<IActionResult> Edit(int id)
 		{
-			if (id == null || _context.Containers == null)
+			if (_context.Containers == null)
 			{
 				return NotFound();
 			}
@@ -98,47 +120,11 @@ namespace PUCCI.Controllers
 			return View(container);
 		}
 
-		// POST: Container/Edit/5
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[Authorize]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(string id, [Bind("ID,Name,Image,Status")] Container container)
-		{
-			if (id != container.ID)
-			{
-				return NotFound();
-			}
-
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Update(container);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!ContainerExists(container.ID))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-				return RedirectToAction(nameof(Index));
-			}
-			return View(container);
-		}
-
 		// GET: Container/Delete/5
 		[Authorize]
-		public async Task<IActionResult> Delete(string id)
+		public async Task<IActionResult> Delete(int id)
 		{
-			if (id == null || _context.Containers == null)
+			if (_context.Containers == null)
 			{
 				return NotFound();
 			}
@@ -157,7 +143,7 @@ namespace PUCCI.Controllers
 		[HttpPost, ActionName("Delete")]
 		[Authorize]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(string id)
+		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			if (_context.Containers == null)
 			{
@@ -173,7 +159,7 @@ namespace PUCCI.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		private bool ContainerExists(string id)
+		private bool ContainerExists(int id)
 		{
 			return (_context.Containers?.Any(e => e.ID == id)).GetValueOrDefault();
 		}
